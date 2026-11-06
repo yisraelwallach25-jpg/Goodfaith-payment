@@ -60,7 +60,8 @@ const seed = () => ({
 let state = seed();
 
 const total = () => state.cart.reduce((sum, item) => sum + item.price, 0).toFixed(2);
-const aiMode = () => process.env.AI_MODE || 'demo';
+const aiMode = () => process.env.AI_MODE || 'deterministic';
+const offlinePaymentMode = () => process.env.PAYPAL_OFFLINE_MODE === 'true';
 const response = () => ({ ...state, total: total(), sandbox: true, aiMode: aiMode(), model: process.env.OLLAMA_MODEL || 'qwen2.5:1.5b' });
 
 const paypalClient = () => {
@@ -130,7 +131,7 @@ async function ollamaAnalysis(text) {
   return parsed;
 }
 
-app.get('/api/health', (_, res) => res.json({ ok: true, service: 'goodfaith', sandbox: true, aiMode: aiMode(), timestamp: new Date().toISOString() }));
+app.get('/api/health', (_, res) => res.json({ ok: true, service: 'goodfaith', sandbox: true, paymentMode: offlinePaymentMode() ? 'offline-test' : (paypalClient() ? 'paypal-sandbox' : 'unconfigured'), aiMode: aiMode(), timestamp: new Date().toISOString() }));
 app.get('/api/state', (_, res) => res.json(response()));
 app.post('/api/reset', (_, res) => { state = seed(); res.json(response()); });
 const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
@@ -186,12 +187,15 @@ app.post('/api/approve', (_, res) => {
 
 app.post('/api/paypal/order', rateLimit(60_000, 10), async (_, res) => {
   if (state.payment.status !== 'approved') return res.status(409).json({ error: 'Sponsor approval is required first.' });
-  const client = paypalClient();
+  const client = offlinePaymentMode() ? null : paypalClient();
+  if (!client && !offlinePaymentMode()) {
+    return res.status(503).json({ error: 'PayPal Sandbox credentials are not configured on this server.' });
+  }
   if (!client) {
     state.payment.orderId = `DEMO-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
     state.payment.status = 'order_created';
-    state.timeline[3] = { label: 'PayPal payment', detail: 'Sandbox order created in demo mode; capture is the next explicit step', state: 'current', time: 'Now' };
-    return res.json({ ...response(), demoNotice: 'Demo order created. Add PayPal Sandbox credentials for live order creation.' });
+    state.timeline[3] = { label: 'PayPal payment', detail: 'Offline test order created; capture is the next explicit step', state: 'current', time: 'Now' };
+    return res.json({ ...response(), offlineNotice: 'Offline test payment enabled. Configure PayPal Sandbox credentials for the real transaction path.' });
   }
   try {
     const orders = new OrdersController(client);
@@ -223,13 +227,16 @@ app.post('/api/paypal/order', rateLimit(60_000, 10), async (_, res) => {
 
 app.post('/api/paypal/capture', rateLimit(60_000, 10), async (req, res) => {
   if (!state.payment.orderId || state.payment.status !== 'order_created') return res.status(409).json({ error: 'A PayPal order awaiting buyer approval is required.' });
-  const client = paypalClient();
+  const client = offlinePaymentMode() ? null : paypalClient();
+  if (!client && !offlinePaymentMode()) {
+    return res.status(503).json({ error: 'PayPal Sandbox credentials are not configured on this server.' });
+  }
   if (!client) {
     state.payment.captureId = `CAP-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
     state.payment.status = 'captured';
-    state.timeline[3] = { label: 'PayPal payment', detail: 'Sandbox payment captured in demo mode', state: 'done', time: 'Now' };
+    state.timeline[3] = { label: 'PayPal payment', detail: 'Offline test payment captured', state: 'done', time: 'Now' };
     state.timeline[4] = { label: 'Fulfillment check', detail: 'Waiting for recipient confirmation', state: 'current', time: 'Now' };
-    return res.json({ ...response(), demoNotice: 'Demo capture completed. Add PayPal Sandbox credentials for a live capture.' });
+    return res.json({ ...response(), offlineNotice: 'Offline test capture completed. Configure PayPal Sandbox credentials for the real transaction path.' });
   }
   try {
     const orders = new OrdersController(client);
