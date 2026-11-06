@@ -146,6 +146,22 @@ app.post('/api/analyze', rateLimit(60_000, 20), async (req, res) => {
   }
 });
 
+app.post('/api/chat', rateLimit(60_000, 30), async (req, res) => {
+  const text = String(req.body?.text || '').trim();
+  if (!text) return res.status(400).json({ error: 'Enter a question or request first.' });
+  try {
+    const policyRisk = deterministicAnalysis(text);
+    const modelRisk = aiMode() === 'ollama' ? await ollamaAnalysis(text) : policyRisk;
+    const risk = policyRisk.level === 'blocked' ? policyRisk :
+      policyRisk.level === 'review' && modelRisk.level === 'low' ? { ...modelRisk, level: 'review', score: Math.max(64, Number(modelRisk.score) || 64), summary: policyRisk.summary, signals: [...new Set([...policyRisk.signals, ...modelRisk.signals])] } : modelRisk;
+    const reply = risk.level === 'blocked' ? `I can’t help move forward with this request. ${risk.summary}` : risk.level === 'review' ? `This needs sponsor review before any payment action. ${risk.summary}` : `This looks consistent with the current GoodFaith policy. ${risk.summary}`;
+    res.json({ reply, analysis: risk, aiMode: aiMode(), model: process.env.OLLAMA_MODEL || 'qwen2.5:1.5b', paymentAuthority: 'human approval plus deterministic policy only' });
+  } catch (error) {
+    const fallback = deterministicAnalysis(text);
+    res.json({ reply: `I could not reach the local model, so I used the safety policy fallback. ${fallback.summary}`, analysis: fallback, aiFallback: true, aiMode: 'deterministic-fallback', paymentAuthority: 'human approval plus deterministic policy only' });
+  }
+});
+
 app.post('/api/approve', (_, res) => {
   if (state.risk.level === 'blocked') return res.status(409).json({ error: 'This request is blocked by policy.' });
   state.payment.status = 'approved';
