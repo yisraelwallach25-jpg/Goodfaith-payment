@@ -14,13 +14,18 @@ function render(data) {
   const approve = $('#approveBtn');
   if (data.payment.status === 'ready') { approve.textContent = 'Approve assistance '; approve.innerHTML += '<span>→</span>'; }
   if (data.payment.status === 'approved') { approve.textContent = 'Create PayPal payment '; approve.innerHTML += '<span>→</span>'; }
-  if (data.payment.status === 'order_created') { approve.textContent = 'Capture Sandbox payment '; approve.innerHTML += '<span>→</span>'; }
+  if (data.payment.status === 'order_created') { approve.textContent = 'Continue PayPal approval '; approve.innerHTML += '<span>↗</span>'; }
   if (data.payment.status === 'captured') { approve.textContent = 'Confirm fulfillment '; approve.innerHTML += '<span>→</span>'; }
   if (data.payment.status === 'fulfilled') { approve.textContent = 'Assistance complete ✓'; approve.disabled = true; }
 }
 async function api(path, options) { const r = await fetch(path, { headers: {'Content-Type':'application/json'}, ...options }); const d = await r.json(); if (!r.ok) throw new Error(d.error || 'Something went wrong'); return d; }
 async function refresh() { render(await api('/api/state')); }
-$('#approveBtn').addEventListener('click', async () => { try { const current = await api('/api/state'); let data; if (current.payment.status === 'ready') { data = await api('/api/approve', {method:'POST'}); toast('Approved. GoodFaith is preparing the PayPal payment.'); } else if (current.payment.status === 'approved') { data = await api('/api/paypal/order', {method:'POST'}); if (data.approvalUrl) window.open(data.approvalUrl, '_blank', 'noopener'); toast(data.demoNotice || 'PayPal Sandbox order created.'); } else if (current.payment.status === 'order_created') { data = await api('/api/paypal/capture', {method:'POST'}); toast('PayPal Sandbox payment captured.'); } else if (current.payment.status === 'captured') { data = await api('/api/fulfill', {method:'POST'}); toast('Impact receipt created — help delivered.'); } render(data); } catch (e) { toast(e.message); } });
+$('#approveBtn').addEventListener('click', async () => { try { const current = await api('/api/state'); let data; if (current.payment.status === 'ready') { data = await api('/api/approve', {method:'POST'}); toast('Approved. GoodFaith is preparing the PayPal payment.'); } else if (current.payment.status === 'approved') { data = await api('/api/paypal/order', {method:'POST'}); if (data.approvalUrl) window.open(data.approvalUrl, '_blank', 'noopener'); toast(data.demoNotice || 'PayPal Sandbox order created.'); } else if (current.payment.status === 'order_created') { if (current.payment.approvalUrl) window.open(current.payment.approvalUrl, '_blank', 'noopener'); toast('Approve the payment in PayPal, then return here.'); return; } else if (current.payment.status === 'captured') { data = await api('/api/fulfill', {method:'POST'}); toast('Impact receipt created — help delivered.'); } render(data); } catch (e) { toast(e.message); } });
 $('#resetBtn').addEventListener('click', async () => { render(await api('/api/reset', {method:'POST'})); toast('Demo reset to the Maya request.'); });
 $('#detailsBtn').addEventListener('click', () => toast('AI analysis: verified recipient, matched essentials, 12/100 risk score, $0.00 over budget.'));
+$('#receiptBtn').addEventListener('click', async () => { try { const response = await fetch('/api/receipts/latest'); if (!response.ok) { const data = await response.json(); throw new Error(data.error); } const blob = await response.blob(); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = 'goodfaith-receipt.html'; link.click(); URL.revokeObjectURL(url); toast('Receipt downloaded with AI reasoning and PayPal details.'); } catch (error) { toast(error.message); } });
 refresh();
+const params = new URLSearchParams(window.location.search);
+if (params.get('paypal_return') === '1') {
+  api('/api/paypal/capture', {method:'POST'}).then(data => { render(data); toast('PayPal Sandbox payment captured after buyer approval.'); }).catch(error => toast(`PayPal approval returned, but capture is pending: ${error.message}`));
+}
