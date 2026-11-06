@@ -60,6 +60,10 @@ const paypalClient = () => {
     }
   });
 };
+const paypalTimeout = (promise, label, ms = 15000) => Promise.race([
+  promise,
+  new Promise((_, reject) => setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms))
+]);
 
 async function paypalAccessToken() {
   const credentials = `${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`;
@@ -145,7 +149,7 @@ app.post('/api/analyze', rateLimit(60_000, 20), async (req, res) => {
 app.post('/api/approve', (_, res) => {
   if (state.risk.level === 'blocked') return res.status(409).json({ error: 'This request is blocked by policy.' });
   state.payment.status = 'approved';
-  state.timeline[2] = { label: 'Sponsor approval', detail: 'Approved by demo sponsor', state: 'done', time: 'Now' };
+  state.timeline[2] = { label: 'Sponsor approval', detail: 'Approved by sponsor', state: 'done', time: 'Now' };
   state.timeline[3] = { label: 'PayPal payment', detail: 'Ready to create a Sandbox order', state: 'current', time: 'Now' };
   res.json(response());
 });
@@ -161,7 +165,7 @@ app.post('/api/paypal/order', rateLimit(60_000, 10), async (_, res) => {
   }
   try {
     const orders = new OrdersController(client);
-    const result = await orders.createOrder({
+    const result = await paypalTimeout(orders.createOrder({
       body: {
         intent: 'CAPTURE',
         purchaseUnits: [{
@@ -174,7 +178,7 @@ app.post('/api/paypal/order', rateLimit(60_000, 10), async (_, res) => {
       },
       prefer: 'return=representation',
       paypalRequestId: `goodfaith-${state.request.id}-${Date.now()}`
-    });
+    }), 'PayPal order creation');
     const order = result.result;
     state.payment.orderId = order.id;
     state.payment.approvalUrl = order.links?.find(link => link.rel === 'approve')?.href || null;
@@ -182,7 +186,8 @@ app.post('/api/paypal/order', rateLimit(60_000, 10), async (_, res) => {
     state.timeline[3] = { label: 'PayPal payment', detail: 'Sandbox order created; buyer approval required', state: 'current', time: 'Now' };
     return res.json({ ...response(), approvalUrl: state.payment.approvalUrl });
   } catch (error) {
-    return res.status(502).json({ error: 'PayPal Sandbox order creation failed.', detail: error.message });
+    const timedOut = String(error.message || '').includes('timed out');
+    return res.status(timedOut ? 504 : 502).json({ error: timedOut ? 'PayPal Sandbox order creation timed out. Check the Sandbox connection and retry.' : 'PayPal Sandbox order creation failed.', detail: error.message });
   }
 });
 
@@ -198,7 +203,7 @@ app.post('/api/paypal/capture', rateLimit(60_000, 10), async (req, res) => {
   }
   try {
     const orders = new OrdersController(client);
-    const result = await orders.captureOrder({ id: state.payment.orderId, prefer: 'return=representation', paypalRequestId: `goodfaith-capture-${state.payment.orderId}` });
+    const result = await paypalTimeout(orders.captureOrder({ id: state.payment.orderId, prefer: 'return=representation', paypalRequestId: `goodfaith-capture-${state.payment.orderId}` }), 'PayPal capture');
     const capture = result.result.purchaseUnits?.[0]?.payments?.captures?.[0];
     state.payment.captureId = capture?.id || null;
     state.payment.approvalUrl = null;
@@ -207,7 +212,8 @@ app.post('/api/paypal/capture', rateLimit(60_000, 10), async (req, res) => {
     state.timeline[4] = { label: 'Fulfillment check', detail: 'Waiting for recipient confirmation', state: 'current', time: 'Now' };
     return res.json(response());
   } catch (error) {
-    return res.status(502).json({ error: 'PayPal Sandbox capture failed.', detail: error.message });
+    const timedOut = String(error.message || '').includes('timed out');
+    return res.status(timedOut ? 504 : 502).json({ error: timedOut ? 'PayPal Sandbox capture timed out. Approve the payment in PayPal, then retry.' : 'PayPal Sandbox capture failed.', detail: error.message });
   }
 });
 
