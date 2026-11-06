@@ -1,5 +1,7 @@
 # GoodFaith submission checklist
 
+Official Devpost reminder received by Gmail: submissions close Thursday, November 12 at 12:00 PM PST. Keep the demo, test credentials, and trials active through the announced winner date of December 21.
+
 | Requirement | Evidence | Status |
 |---|---|---|
 | PayPal technology is central | `server.js` PayPal Server SDK order/capture routes | Ready in demo mode; live Sandbox credentials still need verification |
