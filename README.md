@@ -26,6 +26,18 @@ Add `PAYPAL_CLIENT_ID` and `PAYPAL_CLIENT_SECRET` from the PayPal Developer Dash
 
 Ollama is supported through the `AI_MODE=ollama` setting. The default local model is `qwen2.5:1.5b`, but any compatible local chat model can be configured with `OLLAMA_MODEL`. GoodFaith sends the model a narrowly scoped policy prompt, validates its JSON response, and applies deterministic safety rules after the model. A model recommendation never has payment authority.
 
+For a fully local AI service alongside the app, use `docker-compose.ollama.yml`. It keeps Ollama on the private Docker network and exposes only GoodFaith on port 3000. Supply the PayPal Sandbox variables at runtime; never commit them to `.env` or source control:
+
+```powershell
+$env:PAYPAL_CLIENT_ID='...'
+$env:PAYPAL_CLIENT_SECRET='...'
+$env:PAYPAL_WEBHOOK_ID='...'
+docker compose -f docker-compose.ollama.yml up -d
+docker exec goodfaith-ollama ollama pull qwen2.5:1.5b
+```
+
+The app then uses real PayPal Sandbox order/capture calls and the local Ollama model simultaneously. The deterministic policy layer remains authoritative for restricted requests and payment approval.
+
 ```powershell
 $env:AI_MODE='ollama'
 $env:OLLAMA_MODEL='qwen2.5:1.5b'
