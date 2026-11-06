@@ -10,11 +10,11 @@ copy .env.example .env
 npm start
 ```
 
-Open http://localhost:3000. The app runs in deterministic demo mode without credentials. The full demo is: **Approve assistance → Create PayPal payment → Confirm fulfillment**.
+Open http://localhost:3000. The full flow is: **Approve assistance → Create PayPal payment → buyer approval → capture → Confirm fulfillment**. For an offline test run without PayPal credentials, set `PAYPAL_OFFLINE_MODE=true`; production configuration refuses synthetic orders.
 
 For a deployment-ready container, use `docker build -t goodfaith . && docker run --env-file .env -p 3000:3000 goodfaith`. `render.yaml` contains the corresponding Render service definition and keeps PayPal secrets out of source control. Health checks use `/api/health`.
 
-The final live-Sandbox setup and release gate are documented in [`docs/REAL_SANDBOX_RUNBOOK.md`](docs/REAL_SANDBOX_RUNBOOK.md).
+The final live-Sandbox setup and release gate are documented in [`docs/REAL_SANDBOX_RUNBOOK.md`](docs/REAL_SANDBOX_RUNBOOK.md). Render deployment is documented in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
 The concise pitch, demo sequence, criteria mapping, and verified-claims boundary are in [`SUBMISSION_PACKET.md`](SUBMISSION_PACKET.md).
 
@@ -54,7 +54,7 @@ The current promoted application path remains deterministic-policy-first with op
 - AI output is treated as structured recommendation data, not payment authority.
 - Webhook requests require a PayPal transmission signature header.
 - No secrets belong in the repository; use `.env` locally and `.env.example` for documentation.
-- The app defaults to Sandbox/demo mode.
+- The app always targets PayPal Sandbox; synthetic payment fixtures require the explicit `PAYPAL_OFFLINE_MODE=true` test flag.
 
 ## Hackathon fit
 
@@ -66,7 +66,7 @@ The public Devpost panel includes PayPal developer advocates Jo Franchetti, Eddi
 
 - **PayPal engineers and product reviewers:** PayPal is a real transaction boundary, not a decorative button. Approval, payment, fulfillment, reset, and webhook states are explicit.
 - **AI/ML and systems reviewers:** AI recommendations are structured, explainable, bounded by deterministic policy checks, and never granted payment authority.
-- **Developer advocates and open-source reviewers:** the README has a one-command run path, safe environment setup, a deterministic demo mode, and a clear architecture story.
+- **Developer advocates and open-source reviewers:** the README has a one-command run path, safe environment setup, an explicit offline test mode, and a clear architecture story.
 - **Product/design reviewers:** the hero screen shows one complete human story from need to relief, with no dead-end chat interface.
 - **Partner-tool reviewers:** the architecture leaves clean integration boundaries for PayPal, Postman API testing, and optional AG Grid/Render/Channel3 extensions without making unsupported partner claims.
 
