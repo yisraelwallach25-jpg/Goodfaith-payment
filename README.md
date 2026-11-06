@@ -16,6 +16,8 @@ For a deployment-ready container, use `docker build -t goodfaith . && docker run
 
 The final live-Sandbox setup and release gate are documented in [`docs/REAL_SANDBOX_RUNBOOK.md`](docs/REAL_SANDBOX_RUNBOOK.md).
 
+The concise pitch, demo sequence, criteria mapping, and verified-claims boundary are in [`SUBMISSION_PACKET.md`](SUBMISSION_PACKET.md).
+
 ## PayPal Sandbox
 
 Add `PAYPAL_CLIENT_ID` and `PAYPAL_CLIENT_SECRET` from the PayPal Developer Dashboard to `.env`. Credentials are server-side only. With credentials present, `POST /api/paypal/order` uses the PayPal Server SDK to create an itemized Sandbox order and returns the approval URL; `POST /api/paypal/capture` captures the approved order. Without credentials, the app uses a clearly labeled deterministic demo path.
