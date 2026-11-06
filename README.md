@@ -20,7 +20,7 @@ The concise pitch, demo sequence, criteria mapping, and verified-claims boundary
 
 ## PayPal Sandbox
 
-Add `PAYPAL_CLIENT_ID` and `PAYPAL_CLIENT_SECRET` from the PayPal Developer Dashboard to `.env`. Credentials are server-side only. With credentials present, `POST /api/paypal/order` uses the PayPal Server SDK to create an itemized Sandbox order and returns the approval URL; `POST /api/paypal/capture` captures the approved order. Without credentials, the app uses a clearly labeled deterministic demo path.
+Add `PAYPAL_CLIENT_ID` and `PAYPAL_CLIENT_SECRET` from the PayPal Developer Dashboard to `.env`. Credentials are server-side only. With credentials present, `POST /api/paypal/order` uses the PayPal Server SDK to create an itemized Sandbox order and returns the approval URL; `POST /api/paypal/capture` captures the approved order. Without credentials, payment routes return a configuration error unless the explicit `PAYPAL_OFFLINE_MODE=true` test flag is enabled.
 
 ## Local AI
 
@@ -58,7 +58,7 @@ The current promoted application path remains deterministic-policy-first with op
 
 ## Hackathon fit
 
-The project uses PayPal Sandbox and AI as core product capabilities, with a working interactive demo, public source, open-source license, a local Ollama integration, a reproducible overlay-training scaffold, and a focused end-to-end story for implementation, design, impact, innovation, and presentation.
+The project uses PayPal Sandbox and AI as core product capabilities, with a working interactive portal, public source, open-source license, a local Ollama integration, a reproducible overlay-training scaffold, and a focused end-to-end story for implementation, design, impact, innovation, and presentation.
 
 ## Judge-facing design decisions
 
