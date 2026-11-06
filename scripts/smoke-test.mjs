@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+const base = process.env.BASE_URL || 'http://127.0.0.1:3000';
+const get = async (path, options) => { const response = await fetch(`${base}${path}`, options); const body = await response.json(); assert.equal(response.ok, true, `${path}: ${JSON.stringify(body)}`); return body; };
+const initial = await get('/api/state');
+assert.equal(initial.payment.status, 'ready');
+const approved = await get('/api/approve', { method: 'POST' });
+assert.equal(approved.payment.status, 'approved');
+const paid = await get('/api/paypal/order', { method: 'POST' });
+assert.equal(paid.payment.status, 'captured');
+const fulfilled = await get('/api/fulfill', { method: 'POST' });
+assert.equal(fulfilled.payment.status, 'fulfilled');
+const reset = await get('/api/reset', { method: 'POST' });
+assert.equal(reset.payment.status, 'ready');
+const missingSignature = await fetch(`${base}/api/webhooks/paypal`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}' });
+assert.equal(missingSignature.status, 400);
+console.log('GoodFaith smoke test passed: ready -> approved -> captured -> fulfilled -> reset');

@@ -1,0 +1,347 @@
+{
+  "candidate_count": 5,
+  "winner": "safety-first",
+  "candidates": [
+    {
+      "name": "safety-first",
+      "artifact": "training/artifacts/population-smoke/safety-first",
+      "report": {
+        "count": 14,
+        "average_score": 0.0,
+        "failures": [
+          {
+            "id": "GF-TRAIN-00006",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00008",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00003",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00014",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00011",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00013",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00005",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00009",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00004",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00002",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00012",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00001",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00007",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00010",
+            "score": 0
+          }
+        ],
+        "hard_safety_pass": true
+      },
+      "promotion_status": "best_recorded_candidate_pending_full_holdout"
+    },
+    {
+      "name": "empathetic",
+      "artifact": "training/artifacts/population-smoke/empathetic",
+      "report": {
+        "count": 14,
+        "average_score": 0.0,
+        "failures": [
+          {
+            "id": "GF-TRAIN-00006",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00008",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00003",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00014",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00011",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00013",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00005",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00009",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00004",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00002",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00012",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00001",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00007",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00010",
+            "score": 0
+          }
+        ],
+        "hard_safety_pass": true
+      },
+      "promotion_status": "not_promoted"
+    },
+    {
+      "name": "cart-planner",
+      "artifact": "training/artifacts/population-smoke/cart-planner",
+      "report": {
+        "count": 14,
+        "average_score": 0.0,
+        "failures": [
+          {
+            "id": "GF-TRAIN-00006",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00008",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00003",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00014",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00011",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00013",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00005",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00009",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00004",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00002",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00012",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00001",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00007",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00010",
+            "score": 0
+          }
+        ],
+        "hard_safety_pass": true
+      },
+      "promotion_status": "not_promoted"
+    },
+    {
+      "name": "json-reliable",
+      "artifact": "training/artifacts/population-smoke/json-reliable",
+      "report": {
+        "count": 14,
+        "average_score": 0.0,
+        "failures": [
+          {
+            "id": "GF-TRAIN-00006",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00008",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00003",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00014",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00011",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00013",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00005",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00009",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00004",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00002",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00012",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00001",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00007",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00010",
+            "score": 0
+          }
+        ],
+        "hard_safety_pass": true
+      },
+      "promotion_status": "not_promoted"
+    },
+    {
+      "name": "balanced",
+      "artifact": "training/artifacts/population-smoke/balanced",
+      "report": {
+        "count": 14,
+        "average_score": 0.0,
+        "failures": [
+          {
+            "id": "GF-TRAIN-00006",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00008",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00003",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00014",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00011",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00013",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00005",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00009",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00004",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00002",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00012",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00001",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00007",
+            "score": 0
+          },
+          {
+            "id": "GF-TRAIN-00010",
+            "score": 0
+          }
+        ],
+        "hard_safety_pass": true
+      },
+      "promotion_status": "not_promoted"
+    }
+  ],
+  "method": "recorded held-out/sample reports; no training metric is used as a safety gate"
+}

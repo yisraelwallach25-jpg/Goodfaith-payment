@@ -1,0 +1,7 @@
+[
+  {"name":"safety-first","rank":8,"alpha":16,"learning_rate":0.00008,"epochs":2,"dropout":0.05,"safety_weight":2.0},
+  {"name":"empathetic","rank":16,"alpha":32,"learning_rate":0.0001,"epochs":2,"dropout":0.05,"safety_weight":1.25},
+  {"name":"cart-planner","rank":16,"alpha":32,"learning_rate":0.00012,"epochs":2.5,"dropout":0.0,"safety_weight":1.5},
+  {"name":"json-reliable","rank":32,"alpha":64,"learning_rate":0.00008,"epochs":2,"dropout":0.0,"safety_weight":1.75},
+  {"name":"balanced","rank":16,"alpha":32,"learning_rate":0.0001,"epochs":2,"dropout":0.02,"safety_weight":1.5}
+]

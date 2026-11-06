@@ -1,0 +1,1 @@
+{"name": "json-reliable", "rank": 32, "alpha": 64, "learning_rate": 8e-05, "epochs": 1, "dropout": 0.02, "safety_weight": 1.5}

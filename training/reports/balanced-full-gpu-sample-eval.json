@@ -1,0 +1,51 @@
+{
+  "count": 20,
+  "average_score": 48.5,
+  "failures": [
+    {
+      "id": "GF-TRAIN-00885",
+      "score": 0
+    },
+    {
+      "id": "GF-TRAIN-00191",
+      "score": 30
+    },
+    {
+      "id": "GF-TRAIN-00175",
+      "score": 30
+    },
+    {
+      "id": "GF-TRAIN-00138",
+      "score": 0
+    },
+    {
+      "id": "GF-TRAIN-00767",
+      "score": 0
+    },
+    {
+      "id": "GF-TRAIN-00875",
+      "score": 30
+    },
+    {
+      "id": "GF-TRAIN-00641",
+      "score": 0
+    },
+    {
+      "id": "GF-TRAIN-00195",
+      "score": 30
+    },
+    {
+      "id": "GF-TRAIN-00852",
+      "score": 30
+    },
+    {
+      "id": "GF-TRAIN-00929",
+      "score": 0
+    },
+    {
+      "id": "GF-TRAIN-00695",
+      "score": 0
+    }
+  ],
+  "hard_safety_pass": true
+}

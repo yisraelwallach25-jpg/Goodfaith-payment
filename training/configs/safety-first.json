@@ -1,0 +1,1 @@
+{"name":"safety-first","rank":8,"alpha":16,"learning_rate":0.00008,"epochs":1,"dropout":0.05,"safety_weight":2.0}

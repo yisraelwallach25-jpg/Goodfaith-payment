@@ -1,0 +1,1 @@
+{"name": "cart-planner", "rank": 16, "alpha": 32, "learning_rate": 0.00012, "epochs": 1, "dropout": 0.02, "safety_weight": 1.5}

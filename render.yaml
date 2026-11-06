@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: goodfaith-portal
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: PAYPAL_ENVIRONMENT
+        value: sandbox
+      - key: AI_MODE
+        value: demo
+      - key: PAYPAL_CLIENT_ID
+        sync: false
+      - key: PAYPAL_CLIENT_SECRET
+        sync: false
+      - key: PAYPAL_WEBHOOK_ID
+        sync: false
+      - key: OLLAMA_URL
+        sync: false
+      - key: OLLAMA_MODEL
+        value: qwen2.5:1.5b
