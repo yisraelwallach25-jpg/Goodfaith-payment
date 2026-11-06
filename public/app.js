@@ -2,6 +2,19 @@ const $ = (s) => document.querySelector(s);
 const toast = (message) => { const el = $('#toast'); el.textContent = message; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 3000); };
 const money = (value) => `$${Number(value).toFixed(2)}`;
 function render(data) {
+  const person = document.querySelector('.person');
+  if (person) {
+    const initials = String(data.request.recipient || '').split(/\s+/).map(part => part[0]).join('').slice(0, 2).toUpperCase() || '—';
+    person.querySelector('.person-avatar').textContent = initials;
+    person.querySelector('strong').textContent = data.request.recipient;
+    person.querySelector('small').textContent = `Verified recipient · ${data.request.id}`;
+  }
+  const chips = document.querySelectorAll('.chips span');
+  if (chips.length >= 3) { chips[0].textContent = data.request.category || 'ASSISTANCE'; chips[1].textContent = String(data.request.urgency || 'REVIEW').toUpperCase(); chips[2].textContent = `${money(data.total)} REQUESTED`; }
+  const statusBadge = document.querySelector('.request-top .status');
+  if (statusBadge) statusBadge.textContent = data.payment.status.replaceAll('_', ' ').toUpperCase();
+  const todayLabel = $('#todayLabel');
+  if (todayLabel) todayLabel.textContent = new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).format(new Date()).toUpperCase();
   const captured = ['captured', 'fulfilled'].includes(data.payment.status);
   $('#activeMetric').textContent = captured ? '0' : '1';
   $('#impactMetric').textContent = captured ? '1' : '0';

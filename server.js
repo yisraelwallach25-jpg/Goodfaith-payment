@@ -32,7 +32,8 @@ app.get(['/', '/*.html'], async (req, res, next) => {
   if (!fileName.endsWith('.html')) return next();
   try {
     let html = await fs.readFile(path.join(process.cwd(), 'public', fileName), 'utf8');
-    if (fileName !== 'chat.html') html = html.replace('</nav>', '<a href="/chat.html">AI Chat</a></nav>');
+  html = html.replace(/(<nav>[\s\S]*?<\/nav>)/, nav => nav.replace(/\s*<span>\d+<\/span>/g, ''));
+  if (fileName !== 'chat.html') html = html.replace('</nav>', '<a href="/chat.html">AI Chat</a></nav>');
     if (fileName === 'chat.html') html = html.replace('</head>', '<link rel="stylesheet" href="/chat.css"/></head>');
     res.type('html').send(html);
   } catch { next(); }
