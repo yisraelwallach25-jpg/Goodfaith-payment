@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
 import crypto from 'node:crypto';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import { Client, Environment, OrdersController } from '@paypal/paypal-server-sdk';
 
 const app = express();
@@ -25,6 +27,16 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.json({ limit: '32kb', verify: (req, _res, buffer) => { req.rawBody = buffer.toString('utf8'); } }));
+app.get(['/', '/*.html'], async (req, res, next) => {
+  const fileName = req.path === '/' ? 'index.html' : path.basename(req.path);
+  if (!fileName.endsWith('.html')) return next();
+  try {
+    let html = await fs.readFile(path.join(process.cwd(), 'public', fileName), 'utf8');
+    if (fileName !== 'chat.html') html = html.replace('</nav>', '<a href="/chat.html">AI Chat</a></nav>');
+    if (fileName === 'chat.html') html = html.replace('</head>', '<link rel="stylesheet" href="/chat.css"/></head>');
+    res.type('html').send(html);
+  } catch { next(); }
+});
 app.use(express.static('public'));
 
 const seed = () => ({
