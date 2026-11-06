@@ -1,0 +1,45 @@
+name: GoodFaith verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Start portal in offline test mode
+        run: node server.js > /tmp/goodfaith.log 2>&1 &
+        env:
+          PAYPAL_OFFLINE_MODE: 'true'
+          AI_MODE: deterministic
+      - name: Wait for health endpoint
+        run: |
+          for attempt in {1..20}; do
+            curl --fail --silent http://127.0.0.1:3000/api/health && exit 0
+            sleep 1
+          done
+          cat /tmp/goodfaith.log
+          exit 1
+      - run: npm test
+        env:
+          PAYPAL_OFFLINE_MODE: 'true'
+      - name: Verify portal pages
+        run: |
+          for page in / /requests.html /chat.html /impact.html /settings.html; do
+            curl --fail --silent "http://127.0.0.1:3000${page}" | grep -q "AI Chat"
+          done
+      - name: Validate model reports
+        run: |
+          node -e "for (const f of ['training/reports/population-evaluation.json','training/reports/goodfaith-analyst-live-eval.json']) { const r=require('./'+f); if (!r || typeof r !== 'object') process.exit(1); }"
