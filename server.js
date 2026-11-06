@@ -123,7 +123,8 @@ async function ollamaAnalysis(text) {
   const r = await fetch(process.env.OLLAMA_URL || 'http://127.0.0.1:11434/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: process.env.OLLAMA_MODEL || 'qwen2.5:1.5b', stream: false, format: 'json', messages: [{ role: 'user', content: prompt }] }) });
   if (!r.ok) throw new Error(`Ollama returned ${r.status}`);
   const data = await r.json();
-  const parsed = JSON.parse(data.message?.content || '{}');
+  const raw = String(data.message?.content || '{}').trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '');
+  const parsed = JSON.parse(raw);
   if (!['low', 'review', 'blocked'].includes(parsed.level) || !Array.isArray(parsed.signals)) throw new Error('Invalid GoodFaith analysis');
   return parsed;
 }
