@@ -2,6 +2,14 @@ const $ = (s) => document.querySelector(s);
 const toast = (message) => { const el = $('#toast'); el.textContent = message; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 3000); };
 const money = (value) => `$${Number(value).toFixed(2)}`;
 function render(data) {
+  const captured = ['captured', 'fulfilled'].includes(data.payment.status);
+  $('#activeMetric').textContent = captured ? '0' : '1';
+  $('#impactMetric').textContent = captured ? '1' : '0';
+  $('#fundsMetric').innerHTML = `$${captured ? Number(data.total).toFixed(2) : '0.00'}`;
+  const trust = Math.max(0, 100 - Number(data.risk.score || 0));
+  $('#trustMetric').innerHTML = `${trust}<small>/100</small>`;
+  $('#trustBar').style.width = `${trust}%`;
+  $('#trustLabel').textContent = data.aiMode === 'ollama' ? 'Local analyst online' : 'Policy engine online';
   $('#needText').textContent = data.request.need;
   $('#total').textContent = money(data.total);
   $('#cart').innerHTML = data.cart.map(item => `<div class="cart-item"><div><strong>${item.name}</strong><small>${item.merchant} · ${item.reason}</small></div><span class="price">${money(item.price)}</span></div>`).join('');
@@ -20,7 +28,7 @@ function render(data) {
 }
 async function api(path, options = {}) { const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), 15000); try { const r = await fetch(path, { headers: {'Content-Type':'application/json'}, ...options, signal: controller.signal }); const d = await r.json(); if (!r.ok) throw new Error(d.error || 'Something went wrong'); return d; } catch (error) { if (error.name === 'AbortError') throw new Error('GoodFaith timed out waiting for the payment service. Check the Sandbox connection and try again.'); throw error; } finally { clearTimeout(timer); } }
 async function refresh() { render(await api('/api/state')); }
-$('#approveBtn').addEventListener('click', async () => { try { const current = await api('/api/state'); let data; if (current.payment.status === 'ready') { data = await api('/api/approve', {method:'POST'}); toast('Approved. GoodFaith is preparing the PayPal payment.'); } else if (current.payment.status === 'approved') { data = await api('/api/paypal/order', {method:'POST'}); if (data.approvalUrl) { window.location.assign(data.approvalUrl); return; } toast(data.demoNotice || 'Sandbox order created. Click again to capture the demo payment.'); } else if (current.payment.status === 'order_created') { if (current.payment.approvalUrl) { window.location.assign(current.payment.approvalUrl); return; } data = await api('/api/paypal/capture', {method:'POST'}); toast('Demo payment captured.'); } else if (current.payment.status === 'captured') { data = await api('/api/fulfill', {method:'POST'}); toast('Impact receipt created — help delivered.'); } if (data) render(data); } catch (e) { toast(e.message); } });
+$('#approveBtn').addEventListener('click', async () => { try { const current = await api('/api/state'); let data; if (current.payment.status === 'ready') { data = await api('/api/approve', {method:'POST'}); toast('Approved. GoodFaith is preparing the PayPal payment.'); } else if (current.payment.status === 'approved') { data = await api('/api/paypal/order', {method:'POST'}); if (data.approvalUrl) { window.location.assign(data.approvalUrl); return; } toast(data.demoNotice || 'Sandbox order created. Click again to capture.'); } else if (current.payment.status === 'order_created') { if (current.payment.approvalUrl) { window.location.assign(current.payment.approvalUrl); return; } data = await api('/api/paypal/capture', {method:'POST'}); toast('Sandbox payment captured.'); } else if (current.payment.status === 'captured') { data = await api('/api/fulfill', {method:'POST'}); toast('Impact receipt created — help delivered.'); } if (data) render(data); } catch (e) { toast(e.message); } });
 $('#resetBtn').addEventListener('click', async () => { render(await api('/api/reset', {method:'POST'})); toast('Request reset for a fresh Sandbox review.'); });
 $('#detailsBtn').addEventListener('click', () => toast('AI analysis: verified recipient, matched essentials, 12/100 risk score, $0.00 over budget.'));
 $('#receiptBtn').addEventListener('click', async () => { try { const response = await fetch('/api/receipts/latest'); if (!response.ok) { const data = await response.json(); throw new Error(data.error); } const blob = await response.blob(); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = 'goodfaith-receipt.html'; link.click(); URL.revokeObjectURL(url); toast('Receipt downloaded with AI reasoning and PayPal details.'); } catch (error) { toast(error.message); } });
