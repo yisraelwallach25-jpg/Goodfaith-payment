@@ -145,11 +145,9 @@ app.post('/api/paypal/order', rateLimit(60_000, 10), async (_, res) => {
   const client = paypalClient();
   if (!client) {
     state.payment.orderId = `DEMO-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
-    state.payment.captureId = `CAP-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
-    state.payment.status = 'captured';
-    state.timeline[3] = { label: 'PayPal payment', detail: 'Sandbox payment captured in demo mode', state: 'done', time: 'Now' };
-    state.timeline[4] = { label: 'Fulfillment check', detail: 'Waiting for recipient confirmation', state: 'current', time: 'Now' };
-    return res.json({ ...response(), demoNotice: 'Add PayPal Sandbox credentials to use live order creation.' });
+    state.payment.status = 'order_created';
+    state.timeline[3] = { label: 'PayPal payment', detail: 'Sandbox order created in demo mode; capture is the next explicit step', state: 'current', time: 'Now' };
+    return res.json({ ...response(), demoNotice: 'Demo order created. Add PayPal Sandbox credentials for live order creation.' });
   }
   try {
     const orders = new OrdersController(client);
@@ -180,7 +178,13 @@ app.post('/api/paypal/order', rateLimit(60_000, 10), async (_, res) => {
 app.post('/api/paypal/capture', rateLimit(60_000, 10), async (req, res) => {
   if (!state.payment.orderId || state.payment.status !== 'order_created') return res.status(409).json({ error: 'A PayPal order awaiting buyer approval is required.' });
   const client = paypalClient();
-  if (!client) return res.status(409).json({ error: 'PayPal credentials are not configured.' });
+  if (!client) {
+    state.payment.captureId = `CAP-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+    state.payment.status = 'captured';
+    state.timeline[3] = { label: 'PayPal payment', detail: 'Sandbox payment captured in demo mode', state: 'done', time: 'Now' };
+    state.timeline[4] = { label: 'Fulfillment check', detail: 'Waiting for recipient confirmation', state: 'current', time: 'Now' };
+    return res.json({ ...response(), demoNotice: 'Demo capture completed. Add PayPal Sandbox credentials for a live capture.' });
+  }
   try {
     const orders = new OrdersController(client);
     const result = await orders.captureOrder({ id: state.payment.orderId, prefer: 'return=representation', paypalRequestId: `goodfaith-capture-${state.payment.orderId}` });
