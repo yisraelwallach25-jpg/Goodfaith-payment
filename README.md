@@ -1,5 +1,7 @@
 # GoodFaith
 
+[![GoodFaith verification](https://github.com/yisraelwallach25-jpg/Goodfaith-payment/actions/workflows/ci.yml/badge.svg)](https://github.com/yisraelwallach25-jpg/Goodfaith-payment/actions/workflows/ci.yml)
+
 GoodFaith is an AI-verified mutual-aid commerce prototype for the PayPal AI Hackathon. It helps a sponsor approve essential purchases while keeping the request, risk analysis, PayPal payment, and fulfillment trail transparent.
 
 ## Run locally

@@ -8,6 +8,7 @@ Official Devpost reminder received by Gmail: submissions close Thursday, Novembe
 | AI is meaningful | Ollama analysis path plus `training/` overlay pipeline | Ready; deterministic policy remains authoritative |
 | Working prototype | `npm run smoke` and `/api/health` | Verified |
 | Security and reliability tests | `npm test` (`smoke` + `security`) | Verified |
+| Reproducible repository verification | `.github/workflows/ci.yml` | Pushed; runs tests, portal-route checks, and model-report validation |
 | Full portal | Overview, Requests, AI Chat, Impact, Settings pages | Verified locally |
 | Public repository and license | `README.md`, `LICENSE`, `.gitignore`; GitHub `main` remote | Pushed to `https://github.com/yisraelwallach25-jpg/Goodfaith-payment` |
 | Model evaluation | `training/reports/balanced-full-gpu-full-eval.json`, `population-evaluation.json` | Verified; no adapter promoted |
