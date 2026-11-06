@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 const base = process.env.BASE_URL || 'http://127.0.0.1:3000';
 const get = async (path, options) => { const response = await fetch(`${base}${path}`, options); const body = await response.json(); assert.equal(response.ok, true, `${path}: ${JSON.stringify(body)}`); return body; };
+await get('/api/reset', { method: 'POST' });
 const initial = await get('/api/state');
 assert.equal(initial.payment.status, 'ready');
 const approved = await get('/api/approve', { method: 'POST' });
