@@ -32,10 +32,11 @@ Sponsors want to help quickly, but opaque requests and payment workflows make tr
 - Live local Ollama enrichment works; prompt injection is blocked before approval.
 - Five QLoRA candidates were trained and evaluated.
 - The balanced adapter’s 200-case held-out score is 54.5/100 with hard-safety pass true; it is not promoted.
-- Demo mode mirrors the real PayPal state machine without claiming a live transaction.
+- The explicit offline test mode mirrors the real PayPal state machine without claiming a live transaction; production configuration refuses synthetic orders when PayPal credentials are absent.
+- The recorded five-candidate population evaluation selected `safety-first` on hard-safety criteria; the live `goodfaith-analyst` report covers 14 held-out cases, averages 58.57/100, and passes the hard-safety gate.
 
 ## Do not claim until verified
 
 - Live PayPal Sandbox order/capture with configured credentials.
-- Public repository URL or hosted demo URL.
+- Hosted demo URL.
 - Final browser-recorded YouTube walkthrough.
