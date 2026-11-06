@@ -4,12 +4,12 @@ Official Devpost reminder received by Gmail: submissions close Thursday, Novembe
 
 | Requirement | Evidence | Status |
 |---|---|---|
-| PayPal technology is central | `server.js` PayPal Server SDK order/capture routes | Ready in demo mode; live Sandbox credentials still need verification |
+| PayPal technology is central | `server.js` PayPal Server SDK order/capture routes; `docs/REAL_SANDBOX_RUNBOOK.md` | Implemented; live Sandbox path requires buyer approval before capture |
 | AI is meaningful | Ollama analysis path plus `training/` overlay pipeline | Ready; deterministic policy remains authoritative |
 | Working prototype | `npm run smoke` and `/api/health` | Verified |
 | Security and reliability tests | `npm test` (`smoke` + `security`) | Verified |
-| Full portal | Overview, Requests, Impact, Settings pages | Verified locally |
-| Public repository and license | `README.md`, `LICENSE`, `.gitignore` | Repository publication still required |
+| Full portal | Overview, Requests, AI Chat, Impact, Settings pages | Verified locally |
+| Public repository and license | `README.md`, `LICENSE`, `.gitignore`; GitHub `main` remote | Pushed to `https://github.com/yisraelwallach25-jpg/Goodfaith-payment` |
 | Model evaluation | `training/reports/balanced-full-gpu-full-eval.json`, `population-evaluation.json` | Verified; no adapter promoted |
 | Under-three-minute demo | `WALKTHROUGH.md`, `walkthrough.mp4` | Draft only; real browser capture required |
 | Hosted demo | `Dockerfile`, `render.yaml` | Deployment-ready; hosted URL still required |
