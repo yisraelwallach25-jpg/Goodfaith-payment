@@ -4,6 +4,6 @@
   "private": true,
   "description": "AI-verified mutual-aid commerce with PayPal Sandbox",
   "type": "module",
-  "scripts": { "start": "node server.js", "test": "npm run smoke && npm run security", "smoke": "node scripts/smoke-test.mjs", "security": "node scripts/security-test.mjs", "dataset": "python training/dataset_generator.py" },
+  "scripts": { "start": "node server.js", "test": "npm run smoke && npm run security", "smoke": "node scripts/smoke-test.mjs", "security": "node scripts/security-test.mjs", "readiness": "node scripts/readiness.mjs", "dataset": "python training/dataset_generator.py" },
   "dependencies": { "@paypal/paypal-server-sdk": "^1.1.0", "dotenv": "^16.4.5", "express": "^4.21.1" }
 }
