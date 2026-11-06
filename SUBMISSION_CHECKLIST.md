@@ -14,3 +14,5 @@
 | Final Devpost submission | Devpost project form | Not submitted |
 
 Do not submit while any row marked “still required” remains unresolved. Never include `.env`, PayPal secrets, or private recipient data in the repository or video.
+
+Run `npm run readiness` before submission. Set `READINESS_STRICT=1` in CI or the release environment so missing credentials or a missing public remote fail the release gate.
