@@ -14,6 +14,8 @@ Open http://localhost:3000. The app runs in deterministic demo mode without cred
 
 For a deployment-ready container, use `docker build -t goodfaith . && docker run --env-file .env -p 3000:3000 goodfaith`. `render.yaml` contains the corresponding Render service definition and keeps PayPal secrets out of source control. Health checks use `/api/health`.
 
+The final live-Sandbox setup and release gate are documented in [`docs/REAL_SANDBOX_RUNBOOK.md`](docs/REAL_SANDBOX_RUNBOOK.md).
+
 ## PayPal Sandbox
 
 Add `PAYPAL_CLIENT_ID` and `PAYPAL_CLIENT_SECRET` from the PayPal Developer Dashboard to `.env`. Credentials are server-side only. With credentials present, `POST /api/paypal/order` uses the PayPal Server SDK to create an itemized Sandbox order and returns the approval URL; `POST /api/paypal/capture` captures the approved order. Without credentials, the app uses a clearly labeled deterministic demo path.
